@@ -26,7 +26,7 @@
         <path.apk.app>C:\\Users\\AOleinik\\AppData\\Local\\Programs\\Appium Server GUI</path.apk.app>
         <new.command.timeout>300</new.command.timeout>
         <selenide.timeout>4000</selenide.timeout>
-        <timeout.open.windows>60</timeout.open.windows>
+        <timeout.open.windows>15</timeout.open.windows>
         <webdriver.close.on.tear.down>true</webdriver.close.on.tear.down>
         <test.project.language>RU</test.project.language>
 

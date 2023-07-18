@@ -1,5 +1,6 @@
 package org.otus.components;
 
+
 import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
 
@@ -10,8 +11,8 @@ import static com.codeborne.selenide.Selenide.$;
 public abstract class TabMenuComp {
 
     private final List<SelenideElement> scrollView = $(By.className("android.widget.HorizontalScrollView")).findAll("[focusable = 'true']");
-    private String nameTab;
-    private SelenideElement elementTab;
+    private final String nameTab;
+    private final SelenideElement elementTab;
 
     public TabMenuComp(String nameTab) {
         super();
@@ -28,12 +29,12 @@ public abstract class TabMenuComp {
     }
 
     private SelenideElement findTab() {
-        return scrollView.stream().filter(x -> {
-            List<SelenideElement> elements = x.lastChild().findAll("[text = " + nameTab + "]");
-            if (elements.size() == 1) {
-                return true;
-            }
-            return false;
-        }).findFirst().get();
+        return scrollView.stream()
+                .filter(x -> {
+                    List<SelenideElement> elements = x.lastChild().findAll("[text = " + nameTab + "]");
+                    return elements.size() == 1;
+                })
+                .findFirst()
+                .orElseThrow(() -> new AssertionError(String.format("Вкладвка '%s' не найдна", nameTab)));
     }
 }

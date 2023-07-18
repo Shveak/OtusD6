@@ -12,6 +12,7 @@ public abstract class BasePageAbs<T> {
 
     long timeOut = Long.parseLong(System.getProperty("timeout.open.windows"));
 
+    @SuppressWarnings("unchecked")
     public T clickButton(String text) {
         $(String.format("[text = '%s']", text)).click();
         return (T) this;
@@ -21,21 +22,23 @@ public abstract class BasePageAbs<T> {
         $(By.id("android:id/button1")).click();
     }
 
+    @SuppressWarnings("unchecked")
     public T waitPageWithText(String text) {
         $(String.format("[text = '%s']", text)).should(Condition.visible, Duration.ofSeconds(timeOut));
         return (T) this;
     }
 
+    @SuppressWarnings("unchecked")
     public T waitAlertModal() {
         $(By.id("android:id/parentPanel")).should(Condition.visible, Duration.ofSeconds(timeOut));
         return (T) this;
     }
 
-    public T sleep(long milliseconds) {
+    public void sleep(long milliseconds) {
         Selenide.sleep(milliseconds);
-        return (T) this;
     }
 
+    @SuppressWarnings("unchecked")
     public T waitIsOpenMainPage() {
         $(By.id("android:id/content")).should(Condition.visible, Duration.ofSeconds(timeOut));
         return (T) this;

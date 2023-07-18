@@ -1,7 +1,6 @@
 package org.otus.pages;
 
 import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.selector.ByAttribute;
 import io.appium.java_client.AppiumBy;
@@ -11,19 +10,18 @@ import org.otus.components.ChatTab;
 import org.otus.components.TabMenuComp;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static com.codeborne.selenide.Selenide.$;
 import static org.otus.utils.Utils.getMaskBoundsX;
-import static org.otus.utils.Utils.getMaskBoundsY;
 
 public class ChatPage extends BasePageAbs<ChatPage> {
     private final TabMenuComp chatTab = new ChatTab();
     private final SelenideElement scrollView = $(By.className("android.widget.ScrollView"));
     private final SelenideElement editText = $(AppiumBy.ByAccessibilityId.accessibilityId("Type a message..."));
-
     private final SelenideElement sendButton = $(AppiumBy.ByAccessibilityId.accessibilityId("send"));
 
     public ChatPage open() {
@@ -45,45 +43,42 @@ public class ChatPage extends BasePageAbs<ChatPage> {
         return this;
     }
 
-    public ChatPage checkPreLastAnswer(String text) {
-        Assertions.assertEquals(text.trim(), getLastAnswer(getChat().get(2)).replace("\uF5A4", "").trim());
-        return this;
-    }
-    public ChatPage checkLastAnswer(String text) {
-        Assertions.assertEquals(text.trim(), getLastAnswer(getChat().get(1)).replace("\uF5A4", "").trim());
+    public ChatPage checkMessageInChat(String text, int index) {
+        Assertions.assertEquals(text, getLastAnswer(getChat(index)));
         return this;
     }
 
-    public ChatPage checkLastQuestion(String text) {
-        Assertions.assertEquals(text.trim(), getLastAnswer(getChat().get(2)).replace("\uF5A4", "").trim());
+    public ChatPage waitTextInChat(String text) {
+        long end = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(timeOut);
+        boolean result = false;
+        do {
+            String expectedText = getLastAnswer(getChat(1));
+            if (text.equals(expectedText)) {
+                result = true;
+                break;
+            }
+            sleep(500);
+        } while (System.currentTimeMillis() < end);
+        Assertions.assertTrue(result, String.format("Время ожидания текста '%s' в чате истекло", text));
         return this;
-    }
-
-    private String getAnswerChat() {
-        ElementsCollection collection = this.scrollView.findAll(ByAttribute.className("android.widget.TextView"));
-        String maskLastAnswer = getMaskBoundsY(collection.first().attr("bounds"));
-        return collection.stream()
-                .filter(x -> getMaskBoundsY(x.attr("bounds")).equals(maskLastAnswer))
-                .map(x -> x.attr("text"))
-                .collect(Collectors.joining(" "));
     }
 
     private String getLastAnswer(SelenideElement element) {
         List<SelenideElement> listElementsWords = element.findAll(ByAttribute.className("android.widget.TextView"));
-//                By.cssSelector("android.widget.TextView"));
         return listElementsWords.stream()
-//                .limit(listElementsWords.size() - 1)
                 .map(x -> x.attr("text"))
-                .collect(Collectors.joining(" "));
+                .filter(Objects::nonNull)
+                .map(x -> x.replace("\uF5A4", ""))
+                .collect(Collectors.joining(" ")).trim();
     }
 
-    private Map<Integer, SelenideElement> getChat() {
+    private SelenideElement getChat(int i) {
         List<SelenideElement> elementList = scrollView.findAll("[focusable = 'false']");
         String maskLastAnswer = getMaskBoundsX(scrollView.attr("bounds"));
         AtomicInteger index = new AtomicInteger(0);
         return elementList.stream()
-                .skip(1)
                 .filter(x -> getMaskBoundsX(x.attr("bounds")).equals(maskLastAnswer))
-                .collect(Collectors.toMap((x) -> index.incrementAndGet(), (x) -> x));
+                .skip(1)
+                .collect(Collectors.toMap((x) -> index.incrementAndGet(), (x) -> x)).get(i);
     }
 }

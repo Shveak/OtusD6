@@ -6,7 +6,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.otus.extensions.MyExtension;
 import org.otus.pages.ChatPage;
 import org.otus.pages.ExercisePage;
-import org.otus.pages.InitialPage;
 
 @ExtendWith(MyExtension.class)
 public class TestAndy {
@@ -19,15 +18,16 @@ public class TestAndy {
                 .isVisible();
         chatPage
                 .sendKeys("Hello")
-                .checkLastAnswer("My name is Andy. What is your name?")
+                .waitTextInChat("My name is Andy. What is your name?")
+                .checkMessageInChat("Hello", 2)
                 .sendKeys("My name is Sasha")
-                .sleep(2000)
-                .checkPreLastAnswer("Nice to meet you, Sasha")
-                .checkLastAnswer("How are you?")
+                .waitTextInChat("How are you?")
+                .checkMessageInChat("My name is Sasha", 3)
+                .checkMessageInChat("Nice to meet you, Sasha", 2)
                 .sendKeys("Good")
-                .sleep(2000)
-                .checkPreLastAnswer("I'm glad to hear that\uD83D\uDE0A")
-                .checkLastAnswer("Where are you from?");
+                .waitTextInChat("Where are you from?")
+                .checkMessageInChat("Good", 3)
+                .checkMessageInChat("I'm glad to hear that\uD83D\uDE0A", 2);
     }
 
     @Test
@@ -40,6 +40,8 @@ public class TestAndy {
                 .clickStartButton();
         chatPage
                 .isVisible()
-                .checkLastAnswer("Let's learn some words! As always, you can write 'STOP' to exit the game\uD83D\uDE09");
+                .waitPageWithText("\uD83E\uDD14 Explain")
+                .checkMessageInChat("Hello\uD83D\uDE03", 3)
+                .checkMessageInChat("Let's learn some words! As always, you can write 'STOP' to exit the game\uD83D\uDE09", 2);
     }
 }
