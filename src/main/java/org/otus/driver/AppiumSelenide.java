@@ -22,7 +22,7 @@ public class AppiumSelenide implements WebDriverProvider {
         options.merge(capabilities);
         options.setPlatformName(Platform.ANDROID.name());
         options.setAutomationName(AutomationName.ANDROID_UIAUTOMATOR2);
-        options.setDeviceName("OtusAPI");
+        options.setDeviceName(System.getProperty("device.name"));
         options.setAppPackage("com.pyankoff.andy");
         options.setAppActivity("com.pyankoff.andy.MainActivity");
         options.setNewCommandTimeout(Duration.ofSeconds(Long.parseLong(System.getProperty("new.command.timeout"))));

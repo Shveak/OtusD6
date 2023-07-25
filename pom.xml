@@ -24,6 +24,7 @@
         <remote.driver.url>http://192.168.0.209:4723/wd/hub</remote.driver.url>
         <timeOut>60</timeOut>
         <path.apk.app>C:\\Users\\AOleinik\\AppData\\Local\\Programs\\Appium Server GUI</path.apk.app>
+        <device.name>OtusAPI</device.name>
         <new.command.timeout>300</new.command.timeout>
         <selenide.timeout>4000</selenide.timeout>
         <timeout.open.windows>15</timeout.open.windows>
@@ -110,6 +111,7 @@
                         <timeout.open.windows>${timeout.open.windows}</timeout.open.windows>
                         <new.command.timeout>${new.command.timeout}</new.command.timeout>
                         <path.apk.app>${path.apk.app}</path.apk.app>
+                        <device.name>${device.name}</device.name>
                         <test.project.status>test</test.project.status>
                         <test.project.language>${test.project.language}</test.project.language>
                     </systemPropertyVariables>
